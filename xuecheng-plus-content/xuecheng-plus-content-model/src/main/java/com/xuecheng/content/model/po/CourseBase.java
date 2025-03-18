@@ -1,8 +1,11 @@
 package com.xuecheng.content.model.po;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.xuecheng.base.exception.ValidationGroups;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -38,6 +41,9 @@ public class CourseBase implements Serializable {
     /**
      * 课程名称
      */
+    @NotEmpty(message = "添加课程名称不能为空", groups = ValidationGroups.Insert.class)
+    @NotEmpty(message = "修改课程名称不能为空", groups = ValidationGroups.Update.class)
+    @ApiModelProperty(value = "课程名称", required = true)
     private String name;
 
     /**
