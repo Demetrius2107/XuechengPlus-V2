@@ -28,8 +28,6 @@ public class CourseBaseInfoController {
     @ApiOperation("课程查询接口")
     @PostMapping("/course/list")
     public PageResult<CourseBase> list(PageParams pageParams, @RequestBody(required=false) QueryCourseParamsDto queryCourseParamsDto) {
-
-
         CourseBase courseBase = new CourseBase();
         courseBase.setName("测试名称");
         courseBase.setCreateDate(LocalDateTime.now());
