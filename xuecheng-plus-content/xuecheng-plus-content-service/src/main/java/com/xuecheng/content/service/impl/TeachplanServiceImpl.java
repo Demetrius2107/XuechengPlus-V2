@@ -83,7 +83,6 @@ public class TeachplanServiceImpl implements TeachplanService {
             queryWrapper.eq(TeachplanMedia::getTeachplanId, teachplanId);
             teachplanMediaMapper.delete(queryWrapper);
         }
-
     }
 
     @Transactional

@@ -48,7 +48,6 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
 
     @Override
     public PageResult<CourseBase> queryCourseBaseList(PageParams pageParams, QueryCourseParamsDto queryCourseParamsDto) {
-
         LambdaQueryWrapper<CourseBase> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(StringUtils.isNotEmpty(queryCourseParamsDto.getAuditStatus()), CourseBase::getAuditStatus, queryCourseParamsDto.getAuditStatus());
         lambdaQueryWrapper.eq(StringUtils.isNotEmpty(queryCourseParamsDto.getCourseName()), CourseBase::getName, queryCourseParamsDto.getCourseName());
@@ -56,10 +55,8 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
 
         Page<CourseBase> page = new Page<>(pageParams.getPageNo(), pageParams.getPageSize());
         Page<CourseBase> pageResult = courseBaseMapper.selectPage(page, lambdaQueryWrapper);
-
         List<CourseBase> list = pageResult.getRecords();
         long total = pageResult.getTotal();
-
         PageResult<CourseBase> courseBasePageResult = new PageResult<>(list, total, pageParams.getPageNo(), pageParams.getPageSize());
         return courseBasePageResult;
     }
@@ -106,7 +103,6 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         if (insertMarket <= 0) {
             throw new RuntimeException("保存课程营销信息失败");
         }
-
         // 查询课程基本信息及营销信息并返回
         return getCourseBaseInfo(courseId);
     }
@@ -140,19 +136,16 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         if (courseBase == null) {
             return null;
         }
-
         CourseMarket courseMarket = courseMarketMapper.selectById(courseId);
         CourseBaseInfoDto courseBaseInfoDto = new CourseBaseInfoDto();
         BeanUtils.copyProperties(courseBase, courseBaseInfoDto);
         if (courseMarket != null) {
             BeanUtils.copyProperties(courseMarket, courseBaseInfoDto);
         }
-
         CourseCategory courseCategoryBySt = courseCategoryMapper.selectById(courseBase.getSt());
         courseBaseInfoDto.setStName(courseCategoryBySt.getName());
         CourseCategory courseCategoryByMt = courseCategoryMapper.selectById(courseBase.getMt());
         courseBaseInfoDto.setMtName(courseCategoryByMt.getName());
-
         return courseBaseInfoDto;
     }
 
@@ -168,13 +161,10 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         }
         BeanUtils.copyProperties(dto, courseBase);
         courseBase.setCreateDate(LocalDateTime.now());
-
         int updateSign = courseBaseMapper.updateById(courseBase);
-
         CourseMarket courseMarket = new CourseMarket();
         BeanUtils.copyProperties(dto, courseMarket);
         saveCourseMarketInfo(courseMarket);
-
         return this.getCourseBaseInfo(courseId);
     }
 
