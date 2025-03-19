@@ -50,6 +50,13 @@ public interface CourseBaseInfoService {
      * @author Mr.M
      * @date 2022/9/8 21:04
      */
-    public CourseBaseInfoDto updateCourseBase(Long companyId, EditCourseDto dto);
+    CourseBaseInfoDto updateCourseBase(Long companyId, EditCourseDto dto);
 
+
+    /**
+     * @description 删除课程信息
+     * @param companyId
+     * @param courseId
+     */
+    void deleteCourse(Long companyId, Long courseId);
 }
