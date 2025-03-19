@@ -1,10 +1,13 @@
 package com.xuecheng.content.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.xuecheng.base.exception.XueChengPlusException;
 import com.xuecheng.content.mapper.TeachplanMapper;
+import com.xuecheng.content.mapper.TeachplanMediaMapper;
 import com.xuecheng.content.model.dto.SaveTeachplanDto;
 import com.xuecheng.content.model.dto.TeachplanDto;
 import com.xuecheng.content.model.po.Teachplan;
+import com.xuecheng.content.model.po.TeachplanMedia;
 import com.xuecheng.content.service.TeachplanService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,9 @@ public class TeachplanServiceImpl implements TeachplanService {
 
     @Autowired
     TeachplanMapper teachplanMapper;
+
+    @Autowired
+    TeachplanMediaMapper teachplanMediaMapper;
 
 
     @Override
@@ -49,6 +55,35 @@ public class TeachplanServiceImpl implements TeachplanService {
             BeanUtils.copyProperties(teachplanDto, teachplanNew);
             teachplanMapper.insert(teachplanNew);
         }
+    }
+
+    @Override
+    public void deleteTeachplan(Long teachplanId) {
+        if (teachplanId == null) {
+            XueChengPlusException.cast("课程计划为空");
+        }
+        Teachplan teachplan = teachplanMapper.selectById(teachplanId);
+        // 判断当前课程计划是章还是节
+        Integer grade = teachplan.getGrade();
+        // 当前课程计划为章
+        if (grade == 1) {
+            LambdaQueryWrapper<Teachplan> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Teachplan::getParentid, teachplanId);
+            // 获取查询条目数
+            Integer count = teachplanMapper.selectCount(queryWrapper);
+
+            if (count > 0) {
+                XueChengPlusException.cast("课程计划信息存在子集,无法删除");
+            }
+            teachplanMapper.deleteById(teachplanId);
+        } else {
+            // 当前课程计划为节
+            teachplanMapper.deleteById(teachplanId);
+            LambdaQueryWrapper<TeachplanMedia> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(TeachplanMedia::getTeachplanId, teachplanId);
+            teachplanMediaMapper.delete(queryWrapper);
+        }
+
     }
 
 

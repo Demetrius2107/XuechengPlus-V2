@@ -15,16 +15,30 @@ import java.util.List;
 public interface TeachplanService {
 
     /**
-     * @description 查询课程计划树型结构
      * @param courseId 课程id
      * @return
+     * @description 查询课程计划树型结构
      */
-    public List<TeachplanDto> findTeachplanTree(long courseId);
+    List<TeachplanDto> findTeachplanTree(long courseId);
 
     /**
-     * @description 保存课程计划
      * @param teachplanDto
+     * @description 保存课程计划
      */
-    public void saveTeachplan(SaveTeachplanDto teachplanDto);
+    void saveTeachplan(SaveTeachplanDto teachplanDto);
 
+
+    /**
+     * @description 删除课程计划
+     * @param teachplanId
+     */
+    void deleteTeachplan(Long teachplanId);
+
+
+    /**
+     * @description 课程计划排序
+     * @param moveType
+     * @param teachplanId
+     */
+    void orderByTeachplan(String moveType,Long teachplanId);
 }
