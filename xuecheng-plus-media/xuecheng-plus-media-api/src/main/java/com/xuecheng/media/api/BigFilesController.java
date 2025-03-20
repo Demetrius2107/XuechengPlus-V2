@@ -49,7 +49,15 @@ public class BigFilesController {
                                     @RequestParam("fileMd5") String fileMd5,
                                     @RequestParam("chunk") int chunk) throws Exception {
 
-        return mediaFileService.uploadChunk(fileMd5,chunk,file.getBytes());
+        //创建一个临时文件
+        File tempFile = File.createTempFile("minio", ".temp");
+        file.transferTo(tempFile);
+        //文件路径
+        String localFilePath = tempFile.getAbsolutePath();
+
+        RestResponse restResponse = mediaFileService.uploadChunk(fileMd5, chunk, localFilePath);
+
+        return restResponse;
     }
 
     @ApiOperation(value = "合并文件")
