@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author: Elon
@@ -37,7 +38,7 @@ public class VideoTask {
     @Value("${videoprocess.ffmpegpath}")
     String ffmpegpath;
 
-    public void videoJobHandler() {
+    public void videoJobHandler() throws InterruptedException {
 
         int shardIndex = XxlJobHelper.getShardIndex();
         int shardTotal = XxlJobHelper.getShardTotal();
@@ -138,6 +139,9 @@ public class VideoTask {
                 }
             });
         });
+
+        // 等待，给一个充裕的超时时间，防止无限等待
+        countDownLatch.await(30, TimeUnit.MINUTES);
 
 
     }
